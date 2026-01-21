@@ -1,0 +1,6 @@
+[bot]
+token = "your-telegram-token"
+
+[app]
+downloads_dir = "./downloads"
+temp_dir = "./tmp"
