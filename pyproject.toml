@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "saver"
+version = "0.1.0"
+description = "Telegram bot for downloading videos from supported platforms"
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+packages = [{ include = "saver", from = "src" }]
+
+[tool.poetry.dependencies]
+python = "3.12.10"
+fastapi = "^0.115.6"
+uvicorn = { extras = ["standard"], version = "^0.30.6" }
+aiogram = "^3.13.1"
+pydantic-settings = "^2.6.1"
+python-dotenv = "^1.0.1"
+yt-dlp = "^2024.11.4"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.7.4"
+
+[build-system]
+requires = ["poetry-core>=1.8.0"]
+build-backend = "poetry.core.masonry.api"
