@@ -14,6 +14,7 @@ def build_context(settings: Settings) -> BotContext:
     downloader = YtDlpDownloader(
         downloads_dir=settings.app.downloads_dir,
         temp_dir=settings.app.temp_dir,
+        max_filesize_mb=settings.app.max_filesize_mb,
     )
     database = Database(settings.database.dsn)
     engine = database.create_engine()

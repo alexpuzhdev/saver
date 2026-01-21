@@ -15,6 +15,7 @@ class BotSettings(BaseModel):
 class AppSettings(BaseModel):
     downloads_dir: Path = Field(default_factory=lambda: Path("./downloads"))
     temp_dir: Path = Field(default_factory=lambda: Path("./tmp"))
+    max_filesize_mb: int = Field(default=100, description="Maximum allowed file size in MB")
 
 
 class DatabaseSettings(BaseModel):

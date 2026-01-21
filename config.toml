@@ -4,6 +4,7 @@ token = "your-telegram-token"
 [app]
 downloads_dir = "./downloads"
 temp_dir = "./tmp"
+max_filesize_mb = 100
 
 [database]
 dsn = "postgresql+asyncpg://saver:saver@localhost:5432/saver"

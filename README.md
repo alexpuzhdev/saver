@@ -15,6 +15,7 @@ cp .env_example .env
 Configure `config.toml` with your bot token and storage directories.
 Set `database.dsn` in `config.toml` (or `SAVER_DATABASE__DSN` in `.env`) to point to Postgres.
 The bot auto-creates the `download_records` table on startup.
+Use `app.max_filesize_mb` (or `SAVER_APP__MAX_FILESIZE_MB`) to cap download size.
 
 ## Run API
 ```bash

@@ -14,6 +14,7 @@ from saver.domain.services.video_downloader import DownloadResult, VideoDownload
 class YtDlpDownloader(VideoDownloader):
     downloads_dir: Path
     temp_dir: Path
+    max_filesize_mb: int
 
     async def download(self, url: str) -> DownloadResult:
         self.downloads_dir.mkdir(parents=True, exist_ok=True)
@@ -21,12 +22,14 @@ class YtDlpDownloader(VideoDownloader):
         return await asyncio.to_thread(self._download_sync, url)
 
     def _download_sync(self, url: str) -> DownloadResult:
+        max_bytes = self.max_filesize_mb * 1024 * 1024
         options: dict[str, Any] = {
             "outtmpl": str(self.downloads_dir / "%(title)s.%(ext)s"),
             "paths": {"temp": str(self.temp_dir)},
             "quiet": True,
             "no_warnings": True,
             "noplaylist": True,
+            "max_filesize": max_bytes,
         }
         with YoutubeDL(options) as ydl:
             info = ydl.extract_info(url, download=True)

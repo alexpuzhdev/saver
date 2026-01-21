@@ -41,3 +41,7 @@ async def handle_video_link(message: Message, ctx: BotContext) -> None:
         return
 
     await message.answer_video(video=result.file_path, caption=result.title)
+    try:
+        result.file_path.unlink()
+    except FileNotFoundError:
+        pass
