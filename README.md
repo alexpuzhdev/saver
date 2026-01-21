@@ -21,6 +21,9 @@ The bot auto-creates the `download_records` table on startup.
 poetry run uvicorn saver.presentation.api.main:app --reload
 ```
 
+Health endpoint: `GET /health`  
+Recent downloads: `GET /downloads?limit=20`
+
 ## Run bot
 ```bash
 poetry run python -m saver.presentation.bot.main

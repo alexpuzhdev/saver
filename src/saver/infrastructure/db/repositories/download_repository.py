@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+from pathlib import Path
+
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from saver.domain.entities.download_record import DownloadRecord
@@ -21,3 +24,19 @@ class SqlAlchemyDownloadRepository(DownloadRepository):
         )
         self._session.add(model)
         await self._session.commit()
+
+    async def list_recent(self, limit: int) -> list[DownloadRecord]:
+        stmt = select(DownloadRecordModel).order_by(DownloadRecordModel.created_at.desc()).limit(limit)
+        result = await self._session.execute(stmt)
+        records = []
+        for row in result.scalars():
+            records.append(
+                DownloadRecord(
+                    user_id=row.user_id,
+                    source_url=row.source_url,
+                    title=row.title,
+                    file_path=Path(row.file_path),
+                    created_at=row.created_at,
+                )
+            )
+        return records
