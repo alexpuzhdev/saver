@@ -4,20 +4,29 @@ import asyncio
 
 from aiogram import Bot, Dispatcher
 
-from saver.application.use_cases.download_video import DownloadVideoUseCase
-from saver.config import SettingsLoader
+from saver.config import Settings, SettingsLoader
 from saver.infrastructure.downloader.yt_dlp_downloader import YtDlpDownloader
+from saver.infrastructure.db.database import Base, Database
 from saver.presentation.bot.handlers import BotContext, router
 
 
-def build_context() -> BotContext:
-    settings = SettingsLoader().load()
+def build_context(settings: Settings) -> BotContext:
     downloader = YtDlpDownloader(
         downloads_dir=settings.app.downloads_dir,
         temp_dir=settings.app.temp_dir,
     )
-    use_case = DownloadVideoUseCase(downloader=downloader)
-    return BotContext(download_use_case=use_case)
+    database = Database(settings.database.dsn)
+    engine = database.create_engine()
+    sessionmaker = database.create_sessionmaker(engine)
+    return BotContext(downloader=downloader, sessionmaker=sessionmaker)
+
+
+async def init_database(settings: Settings) -> None:
+    database = Database(settings.database.dsn)
+    engine = database.create_engine()
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    await engine.dispose()
 
 
 async def main() -> None:
@@ -26,7 +35,8 @@ async def main() -> None:
     dispatcher = Dispatcher()
     dispatcher.include_router(router)
 
-    dispatcher["ctx"] = build_context()
+    await init_database(settings)
+    dispatcher["ctx"] = build_context(settings)
 
     await dispatcher.start_polling(bot)
 
