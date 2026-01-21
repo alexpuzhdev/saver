@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 
 from saver.config import SettingsLoader
@@ -17,7 +19,12 @@ def create_app() -> FastAPI:
     def _get_context() -> ApiContext:
         return ApiContext(sessionmaker=sessionmaker)
 
-    app = FastAPI(title="Saver API")
+    @asynccontextmanager
+    async def lifespan(_: FastAPI):
+        yield
+        await engine.dispose()
+
+    app = FastAPI(title="Saver API", lifespan=lifespan)
     app.dependency_overrides[get_context] = _get_context
     app.include_router(health_router)
     app.include_router(downloads_router)

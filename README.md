@@ -35,6 +35,8 @@ poetry run python -m saver.presentation.bot.main
 docker compose up --build
 ```
 
+The compose stack runs both the API and bot containers alongside Postgres.
+
 ## Roadmap (v1)
 1. Initialize project scaffold (Poetry, config, environment templates).
 2. Add FastAPI service with health endpoint and container entrypoint.
